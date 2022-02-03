@@ -1,0 +1,86 @@
+---
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+```
+
+# Harmonized Historical Census Data
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Overview
+
+The U.S. Census is a rich source for population-level demographic, socioeconomic, and housing data. Although the Census Bureau has been collecting data since the 1700s, the data collected has changed over time, with topics being removed, added, and redefined decade-to-decade, making long-term longitudinal analyses difficult. Here, we sought to compile and harmonize variables from the 1970 census through the 2010 census at the census tract level in the following categories:
+
+- population
+- income
+- poverty
+- assisted income
+- unemployment
+- educational attainment
+- racial composition
+- housing occupancy
+- housing value
+
+## Getting the Data
+
+### Downloading the CSV file
+
+The data is contained in a CSV file called [harmonized_census_data.csv](https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_census_data.csv) which is a table of all census tracts listed by their FIPS ID and corresponding  .
+
+### Import Directly Into `R`
+
+Use the following code to download the deprivation index data.frame directly into R:
+
+```
+census_data <- 'https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_census_data.rds' %>% 
+    url() %>% 
+    gzcon() %>% 
+    readRDS() %>% 
+    as_tibble()
+```
+
+## Usage
+
+### Matching longitudinal address data to census tracts
+
+- geocoder
+- st_census_tract
+
+### Joining 
+
+- by census_tract_vintage and census_tract_id
+
+
+## Details
+
+The table below includes specific variable definitions for each census decade.
+
+```{r, echo = FALSE, message = FALSE}
+dd <- readxl::read_excel('harmonized_census_data_dictionary.xlsx', skip = 1) %>% 
+  select(`Harmonized Variable Name`, 
+         `Harmonized Description` = Description...2,
+         `1970` = Description...5,
+         `1980` = Description...8, 
+         `1990` = Description...11, 
+         `2000` = Description...14, 
+         `2010` = Description...17)
+
+DT::datatable(dd)
+```
+
+For more information on the derivation of these variables, please see [harmonized_census_data_dictionary.xlsx](https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_census_data_dictionary.xlsx).
+
+## Reproducibility
+
+- steps ?
+
+
