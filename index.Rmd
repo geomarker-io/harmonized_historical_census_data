@@ -6,6 +6,9 @@ output:
       bg: "#FFFFFF"
       fg: "#072B67"
       primary: "#C2326B"
+    toc: true
+    toc_float: true
+    df_print: paged
 ---
 
 ```{r, include = FALSE}
@@ -56,17 +59,42 @@ census_data <- 'https://github.com/geomarker-io/harmonized_historical_census_dat
 
 ## Usage
 
-Suppose you have a ...
-
 ### Matching longitudinal address data to census tracts
 
-- geocoder
-- st_census_tract
+First, geocode longitudinal address data using the DeGAUSS [geocoder](https://degauss.org/geocoder/).
 
-### Joining 
+Then, use the DeGAUSS [Spatiotemporal Census Tract container](https://degauss.org/st_census_tract/) to assign census tract identifiers for the appropriate decade. This container requires a date range (`start_date` and `end_date` columns). Rows with date ranges that span mulitple decades will be split to one row per decade. 
 
-- by census_tract_vintage and census_tract_id
+For example, 
 
+```{r, echo = FALSE, message = FALSE}
+read_csv('example_data/my_address_file_geocoded_split_ex.csv')
+```
+
+would become 
+
+```{r, echo = FALSE, message = FALSE}
+address_data <- read_csv('example_data/my_address_file_geocoded_split_ex_st_census_tract_v0.1.3.csv', 
+                         col_types = cols(census_tract_vintage = col_character(), 
+                                          census_tract_id = col_character()))
+address_data
+```
+
+where a 2010 tract identifier is assigned to the first row, and the second row is **split** into one row with a **2000** tract identifier and one row with a **2010** tract identifier.
+
+### Joining to harmonized_historical_census_data
+
+Once `census_tract_vintage` and `census_tract_id` is assinged for each row, the `harmonized_census_data` can be joined to your longitudinal address data using both the `census_tract_vintage` and `census_tract_id` columns as keys. 
+
+For example, in `R` this could look like
+
+```{r, echo = FALSE, message = FALSE}
+harmonized_census_data <- readRDS('harmonized_census_data.rds')
+```
+
+```{r}
+dplyr::left_join(address_data, harmonized_census_data, by = c("census_tract_vintage", "census_tract_id"))
+```
 
 ## Details
 
@@ -94,10 +122,11 @@ dd <- readxl::read_excel('harmonized_census_data_dictionary.xlsx', skip = 1) %>%
 
 DT::datatable(
   dd, 
+  width = 1100,
   extensions = c('Scroller', 'Buttons'),
   options = list(
     deferRender = TRUE,
-    scrollY = 200,
+    scrollY = 1000,
     scrollX = 200,
     scroller = TRUE,
     dom = 'Bfrtip',
@@ -108,10 +137,8 @@ DT::datatable(
 ))
 ```
 
-[harmonized_census_data_dictionary.xlsx](https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_census_data_dictionary.xlsx).
-
 ## Reproducibility
 
-- steps ?
+All census data was obtained from [nhgis.org](https://www.nhgis.org/). Each `harmonized_historical_census_data` variable was derived using the formulas listed under the `derivation` columns, and census variables included in each formula column can be found in the NHGIS dataset listed in the corresponding `NHGIS dataset` column. 
 
 
