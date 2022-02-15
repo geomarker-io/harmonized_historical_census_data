@@ -6,8 +6,6 @@ output:
       bg: "#FFFFFF"
       fg: "#072B67"
       primary: "#C2326B"
-    toc: true
-    toc_float: true
     df_print: paged
 ---
 
