@@ -22,24 +22,29 @@ d70 <- d %>%
   filter(census_tract_vintage == 1970)
 
 nrow(d70) == length(unique(d70$census_tract_id))
+summary(d70)
 
 d80 <- d %>%
   filter(census_tract_vintage == 1980)
 
 nrow(d80) == length(unique(d80$census_tract_id))
+summary(d80)
 
 d90 <- d %>%
   filter(census_tract_vintage == 1990)
 
 nrow(d90) == length(unique(d90$census_tract_id))
+summary(d90)
 
 d00 <- d %>%
   filter(census_tract_vintage == 2000)
 
 nrow(d00) == length(unique(d00$census_tract_id))
+summary(d00)
 
 d10 <- d %>%
   filter(census_tract_vintage == 2010)
 
 nrow(d10) == length(unique(d10$census_tract_id))
+summary(d10)
 

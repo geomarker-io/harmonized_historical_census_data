@@ -2,12 +2,14 @@ library(tidyverse)
 
 files70 <- c("nhgis0028_ds99_1970_tract.csv", "nhgis0023_ds99_1970_tract.csv",
              "nhgis0023_ds98_1970_tract.csv", "nhgis0023_ds97_1970_tract.csv",
-             "nhgis0023_ds96_1970_tract.csv", "nhgis0023_ds95_1970_tract.csv")
+             "nhgis0023_ds96_1970_tract.csv", "nhgis0023_ds95_1970_tract.csv",
+             "nhgis0029_ts_nominal_tract.csv")
 d70 <- s3::s3_get_files(glue::glue("s3://geomarker/harmonized_historical_census_data/nhgis1970/{files70}"))
 d70 <- mappp::mappp(d70$file_path, read_csv)
 
 d70[[7]] <- d70[[7]] %>%
-  rename(GISJOIN = GJOIN1970)
+  filter(!is.na(GJOIN1970)) %>%
+  select(GISJOIN = GJOIN1970, A68AA1970)
 
 d70_all <- d70[[1]]
 
@@ -16,7 +18,7 @@ for (i in 2:6) {
                                             "SCSAA", "SMSAA", "URB_AREAA", "BLOCKA", "CDA", "AREANAME"))
 }
 
-d70_all <- left_join(d70_all, d70[[7]], by = c("GISJOIN", "STATE", "COUNTY", "TRACTA"))
+d70_all <- left_join(d70_all, d70[[7]], by = c("GISJOIN"))
 
 d70 <- d70_all %>%
   mutate(
@@ -29,9 +31,11 @@ d70 <- d70_all %>%
       CE6111 + CE6112 + CE6113 + CE6114 + CE6115 + CE6116 + CE6117 + CE6118 + CE6119,
 
     total_families = A68AA1970,
+    total_families = ifelse(total_families == 0, NA, total_families),
 
     adj_1969_2010 = (320.4 / 60.9),
 
+    C1K001 = ifelse(C1K001 < 0, NA, C1K001),
     median_income = C1K001 / total_families,
 
     median_income_2010_adj = median_income * adj_1969_2010,
