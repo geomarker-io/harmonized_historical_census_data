@@ -3,7 +3,7 @@
 To create a deprivation index for each census tract in the United States from 1980 to 2010 based on a principal components analysis of six different measures from the decennial census.
 
 ## Details on Creating the Index
-The following census tract level variables from the harmonized_historical_census_data were used in the analysis:
+The following census tract level variables from the `harmonized_historical_census_data` were used in the analysis:
 
 - `pct_poverty`: percent popultution below poverty level
 - `median_income_2010_adj`: median household income (inflation adjusted dollars)
