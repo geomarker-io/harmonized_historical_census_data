@@ -1,6 +1,10 @@
 # Decennial Deprivation Index
 ## Objective
-To create a deprivation index for each census tract in the United States from 1980 to 2010 based on a principal components analysis of six different measures from the decennial census.
+To create a deprivation index at census tract level in the United States from 1980 to 2010 based on a principal components analysis of six different measures from the decennial census.
+
+Using the tracts with the 2010 deprivation index rank between 0% and 5% as an example, the figure shows that the deprivatoin index included in the dataset can be tracked from as early as 1980 to 2010.
+
+![Dep-Index change over time](https://user-images.githubusercontent.com/104022087/182216616-aa5800c1-1a35-4ecb-9236-75389edb9a2b.PNG)
 
 ## Details on Creating the Index
 The following census tract level variables from the `harmonized_historical_census_data` were used in the analysis:
