@@ -41,14 +41,14 @@ The U.S. Census is a rich source for population-level demographic, socioeconomic
 
 ### Downloading the CSV file
 
-The data is contained in a CSV file called [harmonized_census_data.csv](https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_census_data.csv) which is a table of all census tracts listed by their FIPS ID and corresponding  .
+The data is contained in a CSV file called [harmonized_historical_census_data.csv](https://github.com/geomarker-io/harmonized_historical_census_data/releases/download/0.1.1/harmonized_historical_census_data.zip) which is a table of all census tracts listed by their FIPS ID and corresponding tract vintage.
 
 ### Import Directly Into `R`
 
 Use the following code to download the deprivation index data.frame directly into R:
 
 ```
-census_data <- 'https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_census_data.rds' %>% 
+census_data <- 'https://github.com/geomarker-io/harmonized_historical_census_data/blob/main/harmonized_historical_census_data.rds' %>% 
     url() %>% 
     gzcon() %>% 
     readRDS() %>% 
@@ -66,15 +66,19 @@ Then, use the DeGAUSS [Spatiotemporal Census Tract container](https://degauss.or
 For example, 
 
 ```{r, echo = FALSE, message = FALSE}
-read_csv('example_data/my_address_file_geocoded_split_ex.csv')
+read_csv("example_data/my_address_file_geocoded_split_ex.csv")
 ```
 
 would become 
 
 ```{r, echo = FALSE, message = FALSE}
-address_data <- read_csv('example_data/my_address_file_geocoded_split_ex_st_census_tract_v0.1.3.csv', 
-                         col_types = cols(census_tract_vintage = col_character(), 
-                                          census_tract_id = col_character()))
+address_data <- read_csv(
+  "example_data/my_address_file_geocoded_split_ex_st_census_tract_v0.1.3.csv",
+  col_types = cols(
+    census_tract_vintage = col_character(),
+    census_tract_id = col_character()
+  )
+)
 address_data
 ```
 
@@ -87,11 +91,15 @@ Once `census_tract_vintage` and `census_tract_id` is assinged for each row, the 
 For example, in `R` this could look like
 
 ```{r, echo = FALSE, message = FALSE}
-harmonized_census_data <- readRDS('harmonized_census_data.rds')
+harmonized_census_data <- readRDS("harmonized_historical_census_data.rds")
 ```
 
 ```{r}
-dplyr::left_join(address_data, harmonized_census_data, by = c("census_tract_vintage", "census_tract_id"))
+dplyr::left_join(
+  address_data,
+  harmonized_census_data,
+  by = c("census_tract_vintage", "census_tract_id")
+)
 ```
 
 ## Details
@@ -99,40 +107,47 @@ dplyr::left_join(address_data, harmonized_census_data, by = c("census_tract_vint
 The table below includes specific variable definitions for each census decade.
 
 ```{r, echo = FALSE, message = FALSE}
-dd <- readxl::read_excel('harmonized_census_data_dictionary.xlsx', skip = 1) %>% 
-  select(`Harmonized Variable Name`, 
-         `Harmonized Description` = Description...2,
-         `1970 NHGIS dataset` = `NHGIS dataset...3`,
-         `1970 Derivation` = `Census Variables...4`,
-         `1970 Description` = Description...5,
-         `1980 NHGIS dataset` = `NHGIS dataset...6`,
-         `1980 Derivation` = `Census Variables...7`,
-         `1980 Description` = Description...8, 
-         `1990 NHGIS dataset` = `NHGIS dataset...9`,
-         `1990 Derivation` = `Census Variables...10`,
-         `1990 Description` = Description...11,
-         `2000 NHGIS dataset` = `NHGIS dataset...12`,
-         `2000 Derivation` = `Census Variables...13`,
-         `2000 Description` = Description...14,
-         `2010 NHGIS dataset` = `NHGIS dataset...15`,
-         `2010 Derivation` = `Census Variables...16`,
-         `2010 Description` = Description...17)
+dd <- readxl::read_excel("harmonized_census_data_dictionary.xlsx", skip = 1) %>%
+  select(
+    `Harmonized Variable Name`,
+    `Harmonized Description` = Description...2,
+    `1970 NHGIS dataset` = `NHGIS dataset...3`,
+    `1970 Derivation` = `Census Variables...4`,
+    `1970 Description` = Description...5,
+    `1980 NHGIS dataset` = `NHGIS dataset...6`,
+    `1980 Derivation` = `Census Variables...7`,
+    `1980 Description` = Description...8,
+    `1990 NHGIS dataset` = `NHGIS dataset...9`,
+    `1990 Derivation` = `Census Variables...10`,
+    `1990 Description` = Description...11,
+    `2000 NHGIS dataset` = `NHGIS dataset...12`,
+    `2000 Derivation` = `Census Variables...13`,
+    `2000 Description` = Description...14,
+    `2010 NHGIS dataset` = `NHGIS dataset...15`,
+    `2010 Derivation` = `Census Variables...16`,
+    `2010 Description` = Description...17
+  )
 
 DT::datatable(
-  dd, 
+  dd,
   width = 1100,
-  extensions = c('Scroller', 'Buttons'),
+  extensions = c("Scroller", "Buttons"),
   options = list(
     deferRender = TRUE,
     scrollY = 1000,
     scrollX = 200,
     scroller = TRUE,
-    dom = 'Bfrtip',
-    buttons = c(list(list(extend = 'colvis', columns = c(3:17))), 
-                list(list(extend = 'collection',
-                  buttons = c('csv', 'excel'),
-                  text = 'Download as')))
-))
+    dom = "Bfrtip",
+    buttons = c(
+      list(list(extend = "colvis", columns = c(3:17))),
+      list(list(
+        extend = "collection",
+        buttons = c("csv", "excel"),
+        text = "Download as"
+      ))
+    )
+  )
+)
 ```
 
 ## Reproducibility
